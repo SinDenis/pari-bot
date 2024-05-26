@@ -2,3 +2,18 @@ version: "1"
 services:
   bot:
     build: .
+  s3:
+    image: localstack/localstack:0.13.0.4-arm64
+    container_name: s3
+    network_mode: bridge
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - EDGE_PORT=4566
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    ports:
+      - 4566:4566
+    volumes:
+     - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+     - "/var/run/docker.sock:/var/run/docker.sock"
