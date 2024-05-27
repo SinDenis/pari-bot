@@ -12,6 +12,7 @@ def get_keyboard(buttons):
 
 
 keyboards = {
-    UserStates.BASE: get_keyboard(["Мои пари", "Создать пари"]),
-    UserStates.CREATING_PARI: get_keyboard(["Отмена"])
+    UserStates.BASE: get_keyboard(["Мои пари", "Создать пари", "Настройки пари"]),
+    UserStates.CREATING_PARI: get_keyboard(["Отмена"]),
+    UserStates.PARI_CONFIGURATION_BASE: get_keyboard(["Посмотреть настройки пари", "Настроить пари", "Отмена"])
 }
