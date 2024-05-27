@@ -66,9 +66,9 @@ async def set_pari_taker(message: types.Message, state: FSMContext):
 @dp.message(StateFilter(UserStates.PARI_CREATED))
 async def pari_created(message: types.Message, state: FSMContext):
     pari = pari_storage.set_pari_taker(message.from_user.username, message.text)
-    text = ps.add_pari(pari.taker_id, pari.name)
-    taker_message = "Пользователь " + pari.challenger_id + " заключил с вами пари: " + pari.name
-    await bot.send_message(user_map.get_user(pari.taker_id), taker_message)
+    text = ps.add_pari(pari.taker_name, pari.name)
+    taker_message = "Пользователь " + pari.challenger_name + " заключил с вами пари: " + pari.name
+    await bot.send_message(user_map.get_user(pari.taker_name), taker_message)
     await message.answer(text)
     await state.set_state(UserStates.BASE)
 
