@@ -1,10 +1,10 @@
-from storage.pari import Pari
+from storage.common.pari import Pari
 
 paris = []
 
 
-def add_pari(comment, challenger_id):
-    paris.append(Pari(comment, challenger_id))
+def add_pari(pari_name, challenger_name):
+    paris.append(Pari(name=pari_name, challenger_name=challenger_name))
 
 
 def set_pari_taker(challenger_name, taker_name):

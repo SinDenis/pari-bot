@@ -14,8 +14,8 @@ from keyboard_helper import keyboards
 import pari_service as ps
 
 from config import TOKEN
-import storage.user_repository as user_map
-import storage.pari_repository as pari_storage
+import storage.db.user_db_repository as user_storage
+import storage.db.pari_db_repository as pari_storage
 
 storage = MemoryStorage()
 bot = Bot(token=TOKEN)
@@ -24,9 +24,7 @@ dp = Dispatcher(storage=storage)
 
 @dp.message(Command("start"))
 async def start(message: types.Message, state: FSMContext):
-    user_map.save_user(message.from_user.username, message.chat.id)
-    print(message.from_user.username)
-    print(message.chat.id)
+    user_storage.save_user(message.from_user.username, message.chat.id)
     kb = keyboards[UserStates.BASE]
     await message.answer("Привет! Я пари-бот", reply_markup=kb)
     await state.set_state(UserStates.BASE)
@@ -67,8 +65,12 @@ async def set_pari_taker(message: types.Message, state: FSMContext):
 async def pari_created(message: types.Message, state: FSMContext):
     pari = pari_storage.set_pari_taker(message.from_user.username, message.text)
     text = ps.add_pari(pari.taker_name, pari.name)
-    taker_message = "Пользователь " + pari.challenger_name + " заключил с вами пари: " + pari.name
-    await bot.send_message(user_map.get_user(pari.taker_name), taker_message)
+    taker_user = user_storage.get_user(pari.taker_name)
+    if taker_user is not None:
+        taker_message = "Пользователь " + pari.challenger_name + " заключил с вами пари: " + pari.name
+        await bot.send_message(taker_user, taker_message)
+    else:
+        text += f", однако пользователь {pari.taker_name} не зарегестрирован в боте, так что ему не придет уведомление"
     await message.answer(text)
     await state.set_state(UserStates.BASE)
 
