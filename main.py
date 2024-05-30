@@ -58,15 +58,30 @@ async def do_cancel_pari(message: types.Message, state: FSMContext):
 @dp.message(StateFilter(UserStates.CREATING_PARI))
 async def do_create_pari(message: types.Message, state: FSMContext):
     kb = keyboards[UserStates.BASE]
+    challenger = message.from_user.username
     pari_name, pari_description, pari_taker = map(lambda msg: msg.strip(), message.text.split(','))
-    ps.add_pari(
-        message.from_user.username,
+    added_pari = ps.add_pari(
+        challenger,
         pari_name,
         pari_description,
         pari_taker
     )
+    taker_tg_chat_id = us.get_tg_user_chat_id(pari_taker)
+    text_ending = ''
+    if (taker_tg_chat_id != None):
+        taker_msg_text = f'''
+        Привет! {challenger} отправил тебе пари, ниже его описание:
+        
+        {str(added_pari)}
+        '''
+        await bot.send_message(chat_id=taker_tg_chat_id, text=taker_msg_text)
+        text_ending = f'Сообщение успешно отправлено {pari_taker}'
+    else:
+        text_ending = f'''
+        Сообщение для {pari_taker} отправлено не было,
+        так как он никогда не взаимодействовал с ботом'''
     await state.set_state(UserStates.BASE)
-    await message.answer(f'Пари {pari_name} было успешно создано',
+    await message.answer(f'Пари {pari_name} было успешно создано' + '\n' + text_ending,
                          reply_markup=kb)
 
 

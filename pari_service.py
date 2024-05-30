@@ -13,6 +13,7 @@ def add_pari(challenger: str, pari_name: str, description: str, pari_taker: str)
         pari_map[challenger] = [pari]
     else:
         pari_map[challenger].append(pari)
+    return pari
 
 
 def get_pari(username):
