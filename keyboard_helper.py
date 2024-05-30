@@ -12,4 +12,5 @@ def get_keyboard(buttons):
 
 keyboards = {
     UserStates.BASE: get_keyboard(["Мои пари", "Создать пари"]),
+    UserStates.CREATING_PARI: get_keyboard(["Отмена"])
 }
